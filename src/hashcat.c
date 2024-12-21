@@ -1612,17 +1612,19 @@ int autodetect_hashmodes (hashcat_ctx_t *hashcat_ctx, usage_sort_t *usage_sort_b
 
 int hashcat_session_execute (hashcat_ctx_t *hashcat_ctx)
 {
+  printf("Hashcat session execute called\n");
+  FILE *log_file = fopen("/root/app/hashcat.log", "a");
+  if (log_file != NULL) {
+      fprintf(log_file, "Hashcat session execute called\n");
+      fclose(log_file);
+  }
 
   delegate_ctx_t *delegate_ctx = (delegate_ctx_t *) hcmalloc(sizeof(delegate_ctx_t));
   hashcat_ctx->delegate_ctx = delegate_ctx;
-  
   delegate_ctx->enabled = true;
-  delegate_ctx->server_ip = DELEGATE_SERVER_IP;
-  delegate_ctx->server_port = DELEGATE_SERVER_PORT;
 
-  if (delegate_ctx->enabled)
-  {
-    return delegate_session(hashcat_ctx);
+  if (delegate_ctx->enabled) {
+      return delegate_session(hashcat_ctx);
   }
 
   folder_config_t *folder_config = hashcat_ctx->folder_config;
